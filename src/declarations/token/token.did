@@ -1,3 +1,7 @@
 service : {
-  balanceOf: (principal) -> (nat) query;
+  balanceOf: (principal) -> (record {
+                               balance: nat;
+                               symbol: text;
+                             }) query;
+  payOut: () -> (text);
 }

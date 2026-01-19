@@ -1,5 +1,7 @@
 import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
+import Debug "mo:base/Debug";
+import Iter "mo:base/Iter";
 
 actor Token{
     var owner : Principal = Principal.fromText("k57il-pqt5x-bqkrv-7ypgz-ukncl-3txpa-gsm3i-egd3v-3mmxe-euaqa-jae");
@@ -9,13 +11,31 @@ actor Token{
     var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
     balances.put(owner, totalSupply);
     
-    public query func balanceOf(who: Principal) : async Nat {
+    public query func balanceOf(who: Principal) : async {
+        balance: Nat;
+        symbol: Text;
+    } {
         let balance = switch (balances.get(who)){
             case null {0};
             case (?amount) {amount};
         };
 
-        return balance;
+        return {balance=balance;
+        symbol=symbol;};
+    };
+
+    public shared(msg) func payOut() : async Text{
+        Debug.print(debug_show(msg.caller));
+
+        if(balances.get(msg.caller) == null){
+            let amount = 10000;
+            balances.put(msg.caller, amount);    
+            return "success";
+        }else{
+            return "Already used";
+        }
+
+        
     };
 
     
