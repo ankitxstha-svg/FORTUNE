@@ -1,10 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
+import {token} from "../../../declarations/token";
+import {Principal} from "@dfinity/principal";
 
 function Transfer() {
-  
+
+  const [recipientId, setId]= useState("");
+  const [amount, setAmount]=useState("");
+
+
   async function handleClick() {
-    
-  }
+
+    try {
+      const toPrincipal = Principal.fromText(recipientId);
+      const transferAmount = BigInt(amount);
+
+      const result = await token.transfer(toPrincipal, transferAmount);
+      console.log("Transfer result: ", result);
+
+      
+    } catch (error) {
+      console.error("Transfer Failed: ", error);
+      
+    };
+  };
 
   return (
     <div className="window white">
@@ -16,6 +34,8 @@ function Transfer() {
               <input
                 type="text"
                 id="transfer-to-id"
+                value = {recipientId}
+                onChange = { (e) => {setId(e.target.value)}}
               />
             </li>
           </ul>
@@ -27,6 +47,8 @@ function Transfer() {
               <input
                 type="number"
                 id="amount"
+                value = {amount}
+                onChange = {(e)=>{ setAmount(e.target.value)}}
               />
             </li>
           </ul>

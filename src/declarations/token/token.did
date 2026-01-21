@@ -4,4 +4,5 @@ service : {
                                symbol: text;
                              }) query;
   payOut: () -> (text);
+  transfer: (principal, nat) -> (text);
 }
