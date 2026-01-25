@@ -9,7 +9,12 @@ actor Token{
     var symbol : Text = "FORTUNE";
 
     var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
-    balances.put(owner, totalSupply);
+
+    private stable var balancesEntries : [(Principal, Nat)] = [];
+
+     if(balances.size() < 1){
+            balances.put(owner, totalSupply);
+        };
     
     public query func balanceOf(who: Principal) : async {
         balance: Nat;
@@ -58,6 +63,20 @@ actor Token{
 
         };
     };
+
+    system func preupgrade(){
+        balancesEntries := Iter.toArray(balances.entries());
+    };
+
+    system func postupgrade(){
+        balances := HashMap.fromIter<Principal, Nat>(balancesEntries.vals(), balancesEntries.size(), Principal.equal, Principal.hash);
+
+        if(balances.size() < 1){
+            balances.put(owner, totalSupply);
+        };
+    };
+
+
 
     
 };

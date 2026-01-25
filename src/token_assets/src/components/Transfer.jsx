@@ -6,16 +6,23 @@ function Transfer() {
 
   const [recipientId, setId]= useState("");
   const [amount, setAmount]=useState("");
+  const [disableBtn, setdisableBtn] = useState(false);
+  const [message, setMessage] = useState("");
+  const [msgHidden, setmsgHidden] = useState(true);
 
 
   async function handleClick() {
 
     try {
-      const toPrincipal = Principal.fromText(recipientId);
+      setdisableBtn(true);
+      const toPrincipal = Principal.fromText(recipientId );
       const transferAmount = BigInt(amount);
 
       const result = await token.transfer(toPrincipal, transferAmount);
       console.log("Transfer result: ", result);
+      setmsgHidden(false);
+      setMessage(result);
+      setdisableBtn(false);
 
       
     } catch (error) {
@@ -54,10 +61,11 @@ function Transfer() {
           </ul>
         </fieldset>
         <p className="trade-buttons">
-          <button id="btn-transfer" onClick={handleClick} >
+          <button id="btn-transfer" onClick={handleClick} disabled = {disableBtn}>
             Transfer
           </button>
         </p>
+        <p hidden = {msgHidden}>{message}</p>
       </div>
     </div>
   );
